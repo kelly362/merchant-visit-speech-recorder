@@ -1,7 +1,10 @@
 const TARGET_SAMPLE_RATE = 16000;
-const WS_URL = `ws://${location.hostname || "127.0.0.1"}:8765/asr`;
+const queryParams = new URLSearchParams(location.search);
+const REMOTE_ASR_WS_URL = queryParams.get("asr_ws");
+const WS_URL = REMOTE_ASR_WS_URL || `ws://${location.hostname || "127.0.0.1"}:8765/asr`;
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const USE_LOCAL_ASR = ["127.0.0.1", "localhost", "::1"].includes(location.hostname);
+const USE_STREAM_ASR = Boolean(REMOTE_ASR_WS_URL) || ["127.0.0.1", "localhost", "::1"].includes(location.hostname);
+const STREAM_ASR_LABEL = REMOTE_ASR_WS_URL ? "实验语音模型服务" : "本地转写服务";
 
 const startBtn = document.querySelector("#startBtn");
 const stopBtn = document.querySelector("#stopBtn");
@@ -391,7 +394,7 @@ async function startRecording() {
   }
 
   updateVisitMeta("准备记录");
-  if (USE_LOCAL_ASR) {
+  if (USE_STREAM_ASR) {
     await startLocalAsrRecording();
   } else {
     startBrowserSpeechRecording();
@@ -403,7 +406,7 @@ async function startLocalAsrRecording() {
   clearBtn.disabled = true;
   summaryZone.hidden = true;
   setStatus("connecting", "连接中");
-  renderLiveDialogue("正在连接本地转写服务...");
+  renderLiveDialogue(`正在连接${STREAM_ASR_LABEL}...`);
 
   socket = new WebSocket(WS_URL);
   socket.binaryType = "arraybuffer";
@@ -413,7 +416,7 @@ async function startLocalAsrRecording() {
     if (data.type === "ready") {
       setStatus("live", "记录中");
       updateVisitMeta("记录中");
-      renderLiveDialogue("开始记录商家沟通...");
+      renderLiveDialogue(data.message || "开始记录商家沟通...");
       return;
     }
 
@@ -440,7 +443,7 @@ async function startLocalAsrRecording() {
 
   socket.onerror = () => {
     setStatus("error", "服务异常");
-    renderSystemMessage("无法连接本地转写服务，请确认服务已启动。");
+    renderSystemMessage(`无法连接${STREAM_ASR_LABEL}，请确认服务已启动。`);
     stopRecording(false);
   };
 
