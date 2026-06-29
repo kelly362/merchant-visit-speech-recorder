@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>商户拜访语音记录</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel">
+        <div class="topbar">
+          <div>
+            <p class="eyebrow">线下商户拜访</p>
+            <h1>拜访纪要</h1>
+          </div>
+          <div id="statusPill" class="status idle">
+            <span></span>
+            <strong>未开始</strong>
+          </div>
+        </div>
+
+        <div class="meter" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="controls">
+          <button id="startBtn" class="primary" type="button">
+            <span class="record-dot"></span>
+            开始记录
+          </button>
+          <button id="stopBtn" class="ghost" type="button" disabled>结束记录</button>
+          <button id="clearBtn" class="ghost" type="button">清空记录</button>
+        </div>
+
+        <section class="caption-zone" aria-live="polite">
+          <div class="section-heading">
+            <p class="label">实时对话记录</p>
+            <span id="timeText" class="hint">00:00</span>
+          </div>
+          <div id="partialText" class="partial">等待开始拜访记录...</div>
+        </section>
+
+        <section id="summaryZone" class="summary-zone" hidden>
+          <div class="section-heading">
+            <p class="label">智能总结</p>
+            <span id="summaryMeta" class="hint"></span>
+          </div>
+          <div id="summaryText" class="summary-grid"></div>
+        </section>
+      </section>
+    </main>
+
+    <div id="confirmOverlay" class="confirm-overlay" hidden>
+      <section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+        <p class="label">拜访状态确认</p>
+        <h2 id="confirmTitle">是否结束本次商户拜访？</h2>
+        <p>结束后将根据完整对话生成本次拜访的智能总结；如果还要继续沟通，可以回到记录页继续补充。</p>
+        <div class="confirm-actions">
+          <button id="confirmEndBtn" class="primary" type="button">结束拜访并生成总结</button>
+          <button id="continueVisitBtn" class="ghost" type="button">继续补充记录</button>
+        </div>
+      </section>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

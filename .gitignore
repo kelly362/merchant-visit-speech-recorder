@@ -1,0 +1,8 @@
+.DS_Store
+.venv/
+__pycache__/
+*.pyc
+models/
+*.tar.bz2
+*.onnx
+*.int8.onnx
