@@ -9,14 +9,26 @@
   <body>
     <main class="shell">
       <section class="panel">
+        <button class="back-button" type="button" aria-label="返回上一页">
+          <span></span>
+        </button>
+
         <div class="topbar">
-          <div>
+          <div class="hero-copy">
             <p class="eyebrow">线下商户拜访</p>
             <h1>拜访纪要</h1>
+            <div id="statusPill" class="status idle">
+              <span></span>
+              <strong>未开始</strong>
+            </div>
           </div>
-          <div id="statusPill" class="status idle">
-            <span></span>
-            <strong>未开始</strong>
+          <div class="hero-visual" aria-hidden="true">
+            <div class="paper-illus">
+              <i></i>
+              <i></i>
+              <i></i>
+            </div>
+            <div class="pen-illus"></div>
           </div>
         </div>
 
@@ -51,16 +63,19 @@
             <input id="consentInput" type="checkbox" />
             <span>我已知悉并将告知对方，本次拜访录音仅用于生成总结，同意录音。</span>
           </label>
-        </section>
 
-        <div class="controls">
-          <button id="startBtn" class="primary" type="button">
-            <span class="record-dot"></span>
-            开始记录
-          </button>
-          <button id="stopBtn" class="ghost" type="button" disabled>结束记录</button>
-          <button id="clearBtn" class="ghost" type="button">清空记录</button>
-        </div>
+          <div class="controls">
+            <button id="startBtn" class="primary" type="button">
+              <span class="record-dot"></span>
+              开始记录
+            </button>
+            <button id="stopBtn" class="ghost stop" type="button" disabled>
+              <span class="stop-dot"></span>
+              结束记录
+            </button>
+            <button id="clearBtn" class="ghost clear" type="button">清空记录</button>
+          </div>
+        </section>
 
         <section class="caption-zone" aria-live="polite">
           <div class="section-heading">
@@ -70,7 +85,10 @@
             </div>
             <span id="timeText" class="hint">00:00</span>
           </div>
-          <div id="partialText" class="partial">等待开始拜访记录...</div>
+          <div id="partialText" class="partial">
+            <span class="empty-wave"></span>
+            <span>等待开始拜访记录...</span>
+          </div>
         </section>
 
         <section id="summaryZone" class="summary-zone" hidden>

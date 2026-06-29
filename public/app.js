@@ -140,6 +140,7 @@ function formatTranscript(rawText) {
 function renderLiveDialogue(partial = "") {
   const formattedPartial = partial ? punctuateSentence(partial, "，") : "";
   const content = [committedTranscript, formattedPartial].filter(Boolean).join("\n");
+  partialText.classList.toggle("is-empty", !content);
   partialText.textContent = content || "等待开始拜访记录...";
   partialText.scrollTop = partialText.scrollHeight;
 }
@@ -154,6 +155,7 @@ function appendFinalLine(text) {
 }
 
 function renderSystemMessage(message) {
+  partialText.classList.remove("is-empty");
   partialText.textContent = message;
   partialText.scrollTop = 0;
 }
