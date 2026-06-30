@@ -2,6 +2,7 @@
 import json
 import pathlib
 import subprocess
+import errno
 
 import numpy as np
 from scipy.signal import resample_poly
@@ -12,6 +13,18 @@ from funasr import AutoModel
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "tmp" / "funasr-test"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
+MODELSCOPE_CACHE = pathlib.Path.home() / ".cache" / "modelscope" / "hub" / "models"
+SENSEVOICE_CACHE = MODELSCOPE_CACHE / "iic" / "SenseVoiceSmall"
+VAD_CACHE = MODELSCOPE_CACHE / "iic" / "speech_fsmn_vad_zh-cn-16k-common-pytorch"
+SPK_CACHE = MODELSCOPE_CACHE / "iic" / "speech_campplus_sv_zh-cn_16k-common"
+
+
+if not hasattr(errno, "EREMOTEIO"):
+    errno.EREMOTEIO = errno.EIO
+
+
+def cached_model(path, fallback):
+    return str(path) if path.exists() else fallback
 
 
 def synthesize_line(name, text, filename):
@@ -58,9 +71,9 @@ def main():
     print(f"Test audio: {audio_path}")
 
     model = AutoModel(
-        model="iic/SenseVoiceSmall",
-        vad_model="fsmn-vad",
-        spk_model="cam++",
+        model=cached_model(SENSEVOICE_CACHE, "iic/SenseVoiceSmall"),
+        vad_model=cached_model(VAD_CACHE, "fsmn-vad"),
+        spk_model=cached_model(SPK_CACHE, "cam++"),
         device="cpu",
         disable_update=True,
     )
