@@ -11,6 +11,18 @@ def tone(frequency, seconds=1.0, sample_rate=16000):
 
 
 class FunAsrSpeakerLabelsTest(unittest.TestCase):
+    def test_labels_single_speaker_transcript(self):
+        result = [
+            {
+                "text": "<|zh|><|NEUTRAL|><|Speech|>测试一下多个人说话的声音",
+            }
+        ]
+
+        self.assertEqual(
+            funasr_server.sentence_lines(result),
+            ["说话人1：测试一下多个人说话的声音。"],
+        )
+
     def test_uses_model_speaker_labels_when_available(self):
         result = [
             {

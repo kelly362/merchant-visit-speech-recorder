@@ -286,7 +286,7 @@ def sentence_lines(result, samples=None, sample_rate=SAMPLE_RATE):
     if not lines:
         text = clean_text(item.get("text", ""))
         chunks = re.findall(r".{1,32}", text)
-        lines = [ensure_punctuation(chunk) for chunk in chunks if chunk]
+        lines = [f"说话人1：{ensure_punctuation(chunk)}" for chunk in chunks if chunk]
 
     return lines
 
