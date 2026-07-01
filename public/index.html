@@ -3,119 +3,80 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>商户拜访语音记录</title>
+    <title>讯飞实时语音转写大模型测试台</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="shell">
-      <section class="panel">
-        <button class="back-button" type="button" aria-label="返回上一页">
-          <span></span>
-        </button>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">XFYun RTASR Large Model</p>
+        <h1>实时语音转写 · 多说话人</h1>
+      </div>
+      <span id="statusPill" class="status idle"><i></i><strong>未连接</strong></span>
+      <div class="actions">
+        <button id="startBtn" class="primary" type="button">开始</button>
+        <button id="stopBtn" class="danger" type="button" disabled>停止</button>
+        <button id="clearBtn" class="ghost" type="button">清空</button>
+      </div>
+    </header>
 
-        <div class="topbar">
-          <div class="hero-copy">
-            <p class="eyebrow">线下商户拜访</p>
-            <h1>拜访纪要</h1>
-            <div id="statusPill" class="status idle">
-              <span></span>
-              <strong>未开始</strong>
-            </div>
+    <main class="layout">
+      <section class="transcript-panel" aria-live="polite">
+        <div class="panel-head">
+          <div>
+            <p class="label">实时转写</p>
+            <p id="connectionText" class="hint">等待开始录音</p>
           </div>
-          <div class="hero-visual" aria-hidden="true">
-            <div class="paper-illus">
-              <i></i>
-              <i></i>
-              <i></i>
-            </div>
-            <div class="pen-illus"></div>
-          </div>
+          <strong id="timeText">00:00</strong>
         </div>
 
         <div class="meter" aria-hidden="true">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
         </div>
 
-        <section class="visit-setup">
-          <div class="field-row">
-            <label>
-              <span>客户 / 门店名称</span>
-              <input id="customerInput" type="text" placeholder="如：XX便利店" autocomplete="off" />
-            </label>
-            <label>
-              <span>门店类型</span>
-              <select id="storeTypeInput">
-                <option value="品牌">品牌</option>
-                <option value="自助">自助</option>
-                <option value="线下">线下</option>
-                <option value="便利店">便利店</option>
-                <option value="餐饮">餐饮</option>
-              </select>
-            </label>
-          </div>
-          <label class="consent-row">
-            <input id="consentInput" type="checkbox" />
-            <span>我已知悉并将告知对方，本次拜访录音仅用于生成总结，同意录音。</span>
-          </label>
+        <div id="output" class="output">
+          <p class="empty">点击“开始”并允许麦克风权限。多人轮流说话时，结果会按说话人自动分色展示。</p>
+        </div>
+      </section>
 
-          <div class="controls">
-            <button id="startBtn" class="primary" type="button">
-              <span class="record-dot"></span>
-              开始记录
-            </button>
-            <button id="stopBtn" class="ghost stop" type="button" disabled>
-              <span class="stop-dot"></span>
-              结束记录
-            </button>
-            <button id="clearBtn" class="ghost clear" type="button">清空记录</button>
-          </div>
-        </section>
-
-        <section class="caption-zone" aria-live="polite">
-          <div class="section-heading">
+      <aside class="side-panel">
+        <section>
+          <p class="label">连接信息</p>
+          <dl>
             <div>
-              <p class="label">实时对话记录</p>
-              <p id="visitMeta" class="visit-meta">尚未开始拜访</p>
+              <dt>采样</dt>
+              <dd>16kHz / 16bit PCM</dd>
             </div>
-            <span id="timeText" class="hint">00:00</span>
-          </div>
-          <div id="partialText" class="partial">
-            <span class="empty-wave"></span>
-            <span>等待开始拜访记录...</span>
+            <div>
+              <dt>说话人</dt>
+              <dd>自动分离 · 短片段自动归并</dd>
+            </div>
+            <div>
+              <dt>服务</dt>
+              <dd id="serviceText">自动检测</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section>
+          <p class="label">测试操作</p>
+          <div class="stack">
+            <button id="copyBtn" class="ghost wide" type="button">复制文字稿</button>
+            <button id="downloadBtn" class="ghost wide" type="button">下载 .txt</button>
           </div>
         </section>
 
-        <section id="summaryZone" class="summary-zone" hidden>
-          <div class="section-heading">
-            <p class="label">智能总结</p>
-            <span id="summaryMeta" class="hint"></span>
-          </div>
-          <div id="summaryText" class="summary-grid"></div>
-          <div class="result-actions">
-            <button id="copySummaryBtn" class="ghost" type="button">复制总结</button>
-            <button id="newVisitBtn" class="primary" type="button">再记一场</button>
-          </div>
+        <section>
+          <p class="label">测试提示</p>
+          <ul class="notes">
+            <li>请让不同人自然轮流发言，每次至少说完整一句。</li>
+            <li>新说话人需要有完整发言才会创建标签，零碎误切片会自动并回最近发言人。</li>
+            <li>如需分享给他人测试，请使用 HTTPS 页面和 WSS 中转地址。</li>
+            <li>密钥只在后端环境变量中配置，前端不会暴露鉴权信息。</li>
+          </ul>
         </section>
-      </section>
+      </aside>
     </main>
-
-    <div id="confirmOverlay" class="confirm-overlay" hidden>
-      <section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
-        <p class="label">拜访状态确认</p>
-        <h2 id="confirmTitle">是否结束本次商户拜访？</h2>
-        <p>结束后将根据完整对话生成本次拜访的智能总结；如果还要继续沟通，可以回到记录页继续补充。</p>
-        <div class="confirm-actions">
-          <button id="confirmEndBtn" class="primary" type="button">结束拜访并生成总结</button>
-          <button id="continueVisitBtn" class="ghost" type="button">继续补充记录</button>
-        </div>
-      </section>
-    </div>
 
     <script src="./app.js"></script>
   </body>
